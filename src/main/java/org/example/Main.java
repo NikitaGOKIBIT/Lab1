@@ -41,29 +41,43 @@ class Director {
         this.birthdate = birthdate;
     }
 
+    @Override
     public String toString() {
         return name + " " + surname + " (Born: " + birthdate + ")";
     }
 }
 
-// Клас Screening
-class Screening {
-    private String screeningName;
-    private double profit;
-    private Date screeningDate;
+// Підклас FilmDirector
+class FilmDirector extends Director {
+    private int numberOfAwards;
+    private String famousMovie;
 
-    public Screening(String screeningName, double profit, Date screeningDate) {
-        this.screeningName = screeningName;
-        this.profit = profit;
-        this.screeningDate = screeningDate;
+    public FilmDirector(String name, String surname, Date birthdate, int numberOfAwards, String famousMovie) {
+        super(name, surname, birthdate);
+        this.numberOfAwards = numberOfAwards;
+        this.famousMovie = famousMovie;
     }
 
-    public double getProfit() {
-        return profit;
-    }
-
+    @Override
     public String toString() {
-        return screeningName + " (" + screeningDate + "), Profit: " + profit;
+        return super.toString() + ", Awards: " + numberOfAwards + ", Famous Movie: " + famousMovie;
+    }
+}
+
+// Підклас DocumentaryDirector
+class DocumentaryDirector extends Director {
+    private int numberOfDocumentaries;
+    private String specializationTopic;
+
+    public DocumentaryDirector(String name, String surname, Date birthdate, int numberOfDocumentaries, String specializationTopic) {
+        super(name, surname, birthdate);
+        this.numberOfDocumentaries = numberOfDocumentaries;
+        this.specializationTopic = specializationTopic;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Documentaries: " + numberOfDocumentaries + ", Specialization: " + specializationTopic;
     }
 }
 
@@ -72,53 +86,35 @@ class Movie {
     private String title;
     private MovieGenre genre;
     private Director director;
-    private List<Screening> screenings;
 
     public Movie(String title, MovieGenre genre, Director director) {
         this.title = title;
         this.genre = genre;
         this.director = director;
-        this.screenings = new ArrayList<>();
     }
 
-    public void addScreening(Screening screening) {
-        screenings.add(screening);
-    }
-
-    public void displayFullInfo() {
-        System.out.println("Movie: " + title + " (" + genre + ")");
-        System.out.println("Director: " + director);
-        System.out.println("Screenings:");
-        for (Screening s : screenings) {
-            System.out.println("  " + s);
-        }
-    }
-
-    public void displayShortInfo() {
-        double totalProfit = 0;
-        for (Screening s : screenings) {
-            totalProfit += s.getProfit();
-        }
-        double averageProfit = screenings.size() > 0 ? totalProfit / screenings.size() : 0;
-        System.out.println("Movie: " + title);
-        System.out.println("Director: " + director);
-        System.out.println("Average Profit: " + averageProfit);
+    @Override
+    public String toString() {
+        return "Movie: " + title + " (" + genre + "), Directed by: " + director;
     }
 }
 
 // Головний клас
 public class Main {
     public static void main(String[] args) {
-        // Створення об'єктів
-        Director director = new Director("Christopher", "Nolan", new Date(30, 7, 1970));
-        Movie movie = new Movie("Inception", MovieGenre.ACTION, director);
+        // Створення об'єктів Director
+        Director generalDirector = new Director("Christopher", "Nolan", new Date(30, 7, 1970));
+        FilmDirector filmDirector = new FilmDirector("Quentin", "Tarantino", new Date(27, 3, 1963), 9, "Pulp Fiction");
+        DocumentaryDirector docDirector = new DocumentaryDirector("David", "Attenborough", new Date(8, 5, 1926), 25, "Nature");
 
-        movie.addScreening(new Screening("Screening 1", 1500.5, new Date(10, 7, 2010)));
-        movie.addScreening(new Screening("Screening 2", 2000.0, new Date(12, 7, 2010)));
+        // Створення об'єктів Movie
+        Movie movie1 = new Movie("Inception", MovieGenre.ACTION, generalDirector);
+        Movie movie2 = new Movie("Kill Bill", MovieGenre.ACTION, filmDirector);
+        Movie movie3 = new Movie("Our Planet", MovieGenre.DRAMA, docDirector);
 
         // Вивід інформації
-        movie.displayFullInfo();
-        System.out.println();
-        movie.displayShortInfo();
+        System.out.println(movie1);
+        System.out.println(movie2);
+        System.out.println(movie3);
     }
 }
